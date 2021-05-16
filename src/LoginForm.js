@@ -2,6 +2,10 @@ import classes from "./LoginForm.module.css";
 import React from "react";
 import { useState, useEffect } from "react";
 
+/**
+ * @author Jeeva Kalaiselvam
+ * @returns HTML containing the login form component and logged in application component
+ */
 const LoginForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -9,19 +13,24 @@ const LoginForm = () => {
     const [formValid, setFormValid] = useState("");
     const [loggedIn, setLoggedIn] = useState(false);
 
+    //For any changes in email input by user, Change email state for component re-render
     const emailChangedHandler = (event) => {
         const emailInput = event.target.value;
         setEmail(emailInput);
     };
+
+    //For any changes in password input by user, Change password state for component re-render
     const passwordChangedHandler = (event) => {
         const passwordInput = event.target.value;
         setPassword(passwordInput);
     };
 
+    //Show a error message in the error component section when its state value is set
     const showValidationError = () => {
         setError("Enter valid email and password !");
     };
 
+    //When form is submitted, Prevent default behaviour. Check if formValid state is true, If yes, Confirm that the user is logged in. If not, There is some error, So show the error message by calling the showValidationError function
     const onFormSubmitHandler = (event) => {
         event.preventDefault();
         if (formValid) {
@@ -32,6 +41,7 @@ const LoginForm = () => {
         }
     };
 
+    //This hook runs everytime there is a change to email input or passwor input. They are set as dependencies. Anytime they change, Wait for 500ms and check form validation. On continous input, When state changes and re-render might occur, Clear the old timeout.
     useEffect(() => {
         const timer = setTimeout(() => {
             setFormValid(
@@ -46,6 +56,7 @@ const LoginForm = () => {
         };
     }, [email, password]);
 
+    //JSX containing the wrapped containers for form and application login info
     return (
         <div>
             <form
@@ -80,6 +91,8 @@ const LoginForm = () => {
                 </div>
             </form>
             <br />
+
+            {/* Sample Application Logged in section. This can be later implemented using routes */}
             <div
                 className={loggedIn ? classes["app-login"] : classes["hidden"]}
             >
