@@ -14,7 +14,8 @@ const LoginForm = () => {
     const [error, setError] = useState("");
     const [formValid, setFormValid] = useState("");
 
-    const ctx = useContext(AuthContext);
+    //Auth Context used to managed login and logout state that is shared to all components
+    const authContext = useContext(AuthContext);
 
     //For any changes in email input by user, Change email state for component re-render
     const emailChangedHandler = (event) => {
@@ -37,7 +38,7 @@ const LoginForm = () => {
     const onFormSubmitHandler = (event) => {
         event.preventDefault();
         if (formValid) {
-            ctx.onLogin();
+            authContext.onLogin();
         } else {
             showValidationError();
         }
@@ -64,7 +65,9 @@ const LoginForm = () => {
             <form
                 onSubmit={onFormSubmitHandler}
                 className={
-                    ctx.isLoggedIn ? classes["hidden"] : classes["form-main"]
+                    authContext.isLoggedIn
+                        ? classes["hidden"]
+                        : classes["form-main"]
                 }
             >
                 <p className={classes["error"]}>{error}</p>
@@ -99,7 +102,9 @@ const LoginForm = () => {
             {/* Sample Application Logged in section. This can be later implemented using routes */}
             <div
                 className={
-                    ctx.isLoggedIn ? classes["app-login"] : classes["hidden"]
+                    authContext.isLoggedIn
+                        ? classes["app-login"]
+                        : classes["hidden"]
                 }
             >
                 <ApplicationData />
