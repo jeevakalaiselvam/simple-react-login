@@ -1,6 +1,6 @@
 import React from "react";
 import "./ApplicationData.css";
-import AuthContext from "./auth-context";
+import AuthContext from "./AuthContextProvider";
 import { useContext } from "react";
 
 export default function ApplicationData() {

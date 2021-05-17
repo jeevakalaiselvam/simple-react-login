@@ -2,7 +2,7 @@ import classes from "./LoginForm.module.css";
 import React from "react";
 import { useState, useEffect, useReducer, useContext } from "react";
 import ApplicationData from "./ApplicationData";
-import AuthContext from "./auth-context";
+import AuthContext, { AuthContextProvider } from "./AuthContextProvider";
 
 /**
  * @author Jeeva Kalaiselvam
@@ -13,12 +13,8 @@ const LoginForm = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [formValid, setFormValid] = useState("");
-    const [loggedIn, setLoggedIn] = useState(false);
 
-    const logoutHandler = () => {
-        localStorage.setItem("loginInfo", "0");
-        setLoggedIn(false);
-    };
+    const ctx = useContext(AuthContext);
 
     //For any changes in email input by user, Change email state for component re-render
     const emailChangedHandler = (event) => {
@@ -41,8 +37,7 @@ const LoginForm = () => {
     const onFormSubmitHandler = (event) => {
         event.preventDefault();
         if (formValid) {
-            localStorage.setItem("loginInfo", "1");
-            setLoggedIn(true);
+            ctx.onLogin();
         } else {
             showValidationError();
         }
@@ -65,61 +60,51 @@ const LoginForm = () => {
 
     //JSX containing the wrapped containers for form and application login info
     return (
-        <AuthContext.Provider
-            value={{
-                isLoggedIn: loggedIn,
-                onLogout: logoutHandler,
-            }}
-        >
-            <div>
-                <form
-                    onSubmit={onFormSubmitHandler}
-                    className={
-                        loggedIn ? classes["hidden"] : classes["form-main"]
-                    }
-                >
-                    <p className={classes["error"]}>{error}</p>
-                    <div className={classes["form-item"]}>
-                        <input
-                            className={classes["form-input"]}
-                            id="email"
-                            type="text"
-                            placeholder="Enter your email..."
-                            autoComplete="off"
-                            onChange={emailChangedHandler}
-                        />
-                    </div>
-                    <div className={classes["form-item"]}>
-                        <input
-                            autoComplete="off"
-                            className={classes["form-input"]}
-                            id="password"
-                            type="text"
-                            placeholder="Enter your password..."
-                            onChange={passwordChangedHandler}
-                        />
-                    </div>
-                    <div className={classes["form-item"]}>
-                        <button
-                            className={classes["form-button"]}
-                            type="submit"
-                        >
-                            Login
-                        </button>
-                    </div>
-                </form>
-                <br />
-
-                {/* Sample Application Logged in section. This can be later implemented using routes */}
-                <div
-                    className={
-                        loggedIn ? classes["app-login"] : classes["hidden"]
-                    }
-                >
-                    <ApplicationData />
+        <div>
+            <form
+                onSubmit={onFormSubmitHandler}
+                className={
+                    ctx.isLoggedIn ? classes["hidden"] : classes["form-main"]
+                }
+            >
+                <p className={classes["error"]}>{error}</p>
+                <div className={classes["form-item"]}>
+                    <input
+                        className={classes["form-input"]}
+                        id="email"
+                        type="text"
+                        placeholder="Enter your email..."
+                        autoComplete="off"
+                        onChange={emailChangedHandler}
+                    />
                 </div>
+                <div className={classes["form-item"]}>
+                    <input
+                        autoComplete="off"
+                        className={classes["form-input"]}
+                        id="password"
+                        type="text"
+                        placeholder="Enter your password..."
+                        onChange={passwordChangedHandler}
+                    />
+                </div>
+                <div className={classes["form-item"]}>
+                    <button className={classes["form-button"]} type="submit">
+                        Login
+                    </button>
+                </div>
+            </form>
+            <br />
+
+            {/* Sample Application Logged in section. This can be later implemented using routes */}
+            <div
+                className={
+                    ctx.isLoggedIn ? classes["app-login"] : classes["hidden"]
+                }
+            >
+                <ApplicationData />
             </div>
-        </AuthContext.Provider>
+        </div>
     );
 };
 
